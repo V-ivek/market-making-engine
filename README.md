@@ -46,3 +46,22 @@ Outputs:
 - `reports/fills.csv`
 - `reports/backtest_summary.md`
 - `reports/mle_report.md`
+
+## Specs in this repo
+
+- `IMPLEMENTATION_SPEC.md` — current executable v1 spec
+- `RESEARCH_SPEC.md` — quant methodology spec (A–S + MLE + diagnostics + acceptance gates)
+- `DEV_SPEC.md` — engineering architecture spec (modules, CLI, testing, CI, milestones)
+
+## Git + GitHub
+
+Initial local commit exists:
+- `66a444c feat: scaffold Avellaneda-Stoikov engine with MLE calibration and backtest`
+
+To connect and push to GitHub:
+
+```bash
+git remote add origin <your-github-repo-url>
+git branch -M main
+git push -u origin main
+```
