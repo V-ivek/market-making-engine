@@ -1,0 +1,2 @@
+[console_scripts]
+mm-engine = market_making_engine.cli:main
