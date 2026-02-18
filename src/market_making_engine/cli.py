@@ -9,6 +9,7 @@ import pandas as pd
 
 from .backtest import run_backtest
 from .config import BacktestConfig, CalibrationConfig, StrategyConfig
+from .data_provider import fetch_binance_klines
 from .intensity import fit_intensity
 from .reporting import write_backtest_summary, write_mle_report
 
@@ -78,6 +79,23 @@ def cmd_backtest(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_fetch_data(args: argparse.Namespace) -> int:
+    if args.provider != "binance":
+        raise ValueError("Only binance provider is supported in MVP")
+
+    df = fetch_binance_klines(
+        symbol=args.symbol,
+        interval=args.interval,
+        start_time=args.start,
+        end_time=args.end,
+        limit=args.limit,
+    )
+    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(args.output, index=False)
+    print(f"Saved {len(df)} rows to {args.output}")
+    return 0
+
+
 def cmd_demo(args: argparse.Namespace) -> int:
     rng = np.random.default_rng(args.seed)
 
@@ -141,6 +159,16 @@ def build_parser() -> argparse.ArgumentParser:
     b.add_argument("--seed", type=int, default=7)
     b.add_argument("--outdir", default="reports")
     b.set_defaults(func=cmd_backtest)
+
+    f = sub.add_parser("fetch-data", help="Fetch free market data (MVP: Binance klines)")
+    f.add_argument("--provider", default="binance", choices=["binance"])
+    f.add_argument("--symbol", default="BTCUSDT")
+    f.add_argument("--interval", default="1m")
+    f.add_argument("--start", default=None, help="ISO-8601 start time, e.g. 2026-02-01T00:00:00Z")
+    f.add_argument("--end", default=None, help="ISO-8601 end time")
+    f.add_argument("--limit", type=int, default=1000)
+    f.add_argument("--output", default="data/processed/binance_klines.csv")
+    f.set_defaults(func=cmd_fetch_data)
 
     d = sub.add_parser("demo", help="Generate synthetic data, calibrate, and backtest")
     d.add_argument("--outdir", default="reports")

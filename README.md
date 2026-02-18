@@ -5,6 +5,16 @@ Avellaneda-Stoikov market-making engine with:
 - MLE report generation,
 - inventory/P&L/adverse-selection backtesting.
 
+## MVP Roadmap (free-data first)
+
+Phase 1 (now):
+- Use free Binance public klines to drive backtest loops quickly.
+- Keep intensity calibration lightweight while data plumbing is built.
+
+Phase 2:
+- Add free live top-of-book + trade capture for better fill/intensity calibration.
+- Upgrade execution realism (latency/queue/partials).
+
 ## Quickstart
 
 ```bash
@@ -16,6 +26,19 @@ pip install -e .
 # End-to-end synthetic demo
 mm-engine demo --outdir reports
 ```
+
+## Fetch free market data (MVP)
+
+```bash
+mm-engine fetch-data \
+  --provider binance \
+  --symbol BTCUSDT \
+  --interval 1m \
+  --limit 1000 \
+  --output data/processed/btcusdt_1m.csv
+```
+
+Then run a backtest using `--mid-col mid` from that file.
 
 ## Calibrate from real data
 
